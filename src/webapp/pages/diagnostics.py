@@ -4,18 +4,15 @@ Diagnostics page — VIF analysis, residual plots, validation report.
 
 from __future__ import annotations
 
-from typing import List, Optional
-
 import numpy as np
-import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
+import streamlit as st
 
 from src.data.validator import ValidationReport
 from src.models.diagnostics import calculate_vif, missing_value_audit
 from src.models.spec import Estimator, ModelResult
 from src.webapp.components.charts import histogram
-
 
 _LAYOUT = dict(
     template="plotly_dark",
@@ -28,8 +25,8 @@ _LAYOUT = dict(
 
 def render(
     df: pd.DataFrame,
-    results: List[ModelResult],
-    validation_report: Optional[ValidationReport],
+    results: list[ModelResult],
+    validation_report: ValidationReport | None,
     settings: dict,
 ) -> None:
     """Render the diagnostics page."""
@@ -48,8 +45,13 @@ def render(
         st.markdown("### Variance Inflation Factors")
         numeric_cols = df.select_dtypes(include="number").columns.tolist()
         # Exclude IDs and DVs
-        exclude = {"hhid", "debt_ratio_winsorized", "log_debt_ratio_winsorized",
-                    "total_debt", "total_assets"}
+        exclude = {
+            "hhid",
+            "debt_ratio_winsorized",
+            "log_debt_ratio_winsorized",
+            "total_debt",
+            "total_assets",
+        }
         vif_candidates = [c for c in numeric_cols if c not in exclude]
 
         if vif_candidates:
@@ -58,18 +60,18 @@ def render(
                 vif_df = calculate_vif(clean, vif_candidates)
 
                 # VIF bar chart
-                colors = [
-                    "#fb7185" if f else "#34d399"
-                    for f in vif_df["flagged"]
-                ]
-                fig = go.Figure(go.Bar(
-                    x=vif_df["VIF"].values,
-                    y=vif_df["feature"].values,
-                    orientation="h",
-                    marker_color=colors,
-                ))
-                fig.add_vline(x=5, line_dash="dash", line_color="#fbbf24",
-                              annotation_text="Threshold = 5")
+                colors = ["#fb7185" if f else "#34d399" for f in vif_df["flagged"]]
+                fig = go.Figure(
+                    go.Bar(
+                        x=vif_df["VIF"].values,
+                        y=vif_df["feature"].values,
+                        orientation="h",
+                        marker_color=colors,
+                    )
+                )
+                fig.add_vline(
+                    x=5, line_dash="dash", line_color="#fbbf24", annotation_text="Threshold = 5"
+                )
                 fig.update_layout(title="VIF by Variable", **_LAYOUT)
                 st.plotly_chart(fig, use_container_width=True)
 
@@ -82,8 +84,9 @@ def render(
     # ---- Tab 2: Residuals ----
     with tab2:
         st.markdown("### Residual Analysis")
-        ols_results = [r for r in results
-                       if r.spec.estimator == Estimator.OLS and r.raw_result is not None]
+        ols_results = [
+            r for r in results if r.spec.estimator == Estimator.OLS and r.raw_result is not None
+        ]
 
         if not ols_results:
             st.info("No OLS model results available for residual analysis.")
@@ -104,14 +107,17 @@ def render(
                 fig = go.Figure()
                 sample_idx = (
                     np.random.choice(len(residuals), min(3000, len(residuals)), replace=False)
-                    if len(residuals) > 3000 else np.arange(len(residuals))
+                    if len(residuals) > 3000
+                    else np.arange(len(residuals))
                 )
-                fig.add_trace(go.Scatter(
-                    x=fitted.iloc[sample_idx],
-                    y=residuals.iloc[sample_idx],
-                    mode="markers",
-                    marker=dict(size=3, color="#60a5fa", opacity=0.4),
-                ))
+                fig.add_trace(
+                    go.Scatter(
+                        x=fitted.iloc[sample_idx],
+                        y=residuals.iloc[sample_idx],
+                        mode="markers",
+                        marker=dict(size=3, color="#60a5fa", opacity=0.4),
+                    )
+                )
                 fig.add_hline(y=0, line_dash="dash", line_color="#94a3b8")
                 fig.update_layout(
                     title="Residuals vs Fitted Values",
@@ -145,20 +151,23 @@ def render(
                 f'<span style="color: {status_color}; font-size: 1.4rem; '
                 f'font-weight: 700;">Status: {status_text}</span>'
                 f'<br/><span style="color: #94a3b8;">'
-                f'{validation_report.rows_checked:,} rows checked across '
-                f'{validation_report.columns_checked} columns. '
-                f'{validation_report.error_count} errors, '
-                f'{validation_report.warning_count} warnings.</span></div>',
+                f"{validation_report.rows_checked:,} rows checked across "
+                f"{validation_report.columns_checked} columns. "
+                f"{validation_report.error_count} errors, "
+                f"{validation_report.warning_count} warnings.</span></div>",
                 unsafe_allow_html=True,
             )
 
             if validation_report.violations:
-                violations_data = [{
-                    "Column": v.column,
-                    "Rule": v.rule,
-                    "Detail": v.detail,
-                    "Severity": v.severity,
-                } for v in validation_report.violations]
+                violations_data = [
+                    {
+                        "Column": v.column,
+                        "Rule": v.rule,
+                        "Detail": v.detail,
+                        "Severity": v.severity,
+                    }
+                    for v in validation_report.violations
+                ]
 
                 st.dataframe(
                     pd.DataFrame(violations_data),

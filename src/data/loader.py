@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -38,8 +37,8 @@ def load_stata(path: Path) -> pd.DataFrame:
 
 def load_raw_data(
     cfg: Settings,
-    hh_path: Optional[Path] = None,
-    ind_path: Optional[Path] = None,
+    hh_path: Path | None = None,
+    ind_path: Path | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Load household and individual data.

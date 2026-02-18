@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.data.schema import ANALYSIS_SCHEMA, ColumnSchema, DType
-from src.data.validator import Violation, ValidationReport, validate
+from src.data.schema import ColumnSchema, DType
+from src.data.validator import ValidationReport, Violation, validate
 
 
 class TestColumnSchema:

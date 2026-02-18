@@ -1,4 +1,5 @@
 """Allow ``python -m src`` to run the CLI."""
+
 from src.cli import main
 
 if __name__ == "__main__":

@@ -4,19 +4,17 @@ Data Explorer page — interactive filtering and browsing.
 
 from __future__ import annotations
 
-import streamlit as st
 import pandas as pd
+import streamlit as st
 
-from src.webapp.components.charts import scatter, histogram
+from src.webapp.components.charts import histogram, scatter
 
 
 def render(df: pd.DataFrame, settings: dict) -> None:
     """Render the data explorer page."""
     st.markdown("# Data Explorer")
     st.markdown(
-        '<p style="color: #94a3b8;">'
-        "Filter and explore the analysis dataset interactively."
-        "</p>",
+        '<p style="color: #94a3b8;">Filter and explore the analysis dataset interactively.</p>',
         unsafe_allow_html=True,
     )
 
@@ -57,8 +55,7 @@ def render(df: pd.DataFrame, settings: dict) -> None:
     filtered = df.copy()
     if "head_age" in filtered.columns:
         filtered = filtered[
-            (filtered["head_age"] >= age_range[0])
-            & (filtered["head_age"] <= age_range[1])
+            (filtered["head_age"] >= age_range[0]) & (filtered["head_age"] <= age_range[1])
         ]
     if gender != "All" and "head_is_male" in filtered.columns:
         filtered = filtered[filtered["head_is_male"] == (1.0 if gender == "Male" else 0.0)]

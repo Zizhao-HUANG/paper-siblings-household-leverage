@@ -9,7 +9,6 @@ and also back-transformed to the original scale.
 from __future__ import annotations
 
 import logging
-from typing import List
 
 import numpy as np
 import pandas as pd
@@ -40,7 +39,7 @@ def estimate_ridge(
     ModelResult
     """
     y = df[spec.dep_var].values
-    x_cols: List[str] = [c for c in spec.indep_vars if c in df.columns]
+    x_cols: list[str] = [c for c in spec.indep_vars if c in df.columns]
     x = df[x_cols].values
 
     # Standardise if requested (strongly recommended for Ridge)
@@ -60,7 +59,10 @@ def estimate_ridge(
 
     logger.info(
         "[%s] RidgeCV fitted: N=%d, R2=%.4f, best_alpha=%.4g",
-        spec.name, len(y), r2, ridge.alpha_,
+        spec.name,
+        len(y),
+        r2,
+        ridge.alpha_,
     )
 
     return ModelResult(

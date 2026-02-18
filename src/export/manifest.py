@@ -22,13 +22,18 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 _KEY_PACKAGES = [
-    "pandas", "numpy", "statsmodels", "scipy",
-    "scikit-learn", "streamlit", "plotly",
+    "pandas",
+    "numpy",
+    "statsmodels",
+    "scipy",
+    "scikit-learn",
+    "streamlit",
+    "plotly",
 ]
 
 
@@ -37,7 +42,9 @@ def _get_git_hash() -> str:
     try:
         result = subprocess.run(
             ["git", "rev-parse", "--short", "HEAD"],
-            capture_output=True, text=True, timeout=5,
+            capture_output=True,
+            text=True,
+            timeout=5,
         )
         if result.returncode != 0:
             return "not-a-repo"
@@ -46,7 +53,9 @@ def _get_git_hash() -> str:
         # Check for uncommitted changes
         dirty_check = subprocess.run(
             ["git", "status", "--porcelain"],
-            capture_output=True, text=True, timeout=5,
+            capture_output=True,
+            text=True,
+            timeout=5,
         )
         if dirty_check.stdout.strip():
             return f"{commit}-dirty"
@@ -64,9 +73,9 @@ def _sha256(filepath: Path) -> str:
     return h.hexdigest()
 
 
-def _get_package_versions() -> Dict[str, str]:
+def _get_package_versions() -> dict[str, str]:
     """Return version strings for key packages."""
-    versions: Dict[str, str] = {}
+    versions: dict[str, str] = {}
     for pkg in _KEY_PACKAGES:
         try:
             mod = __import__(pkg)
@@ -77,10 +86,10 @@ def _get_package_versions() -> Dict[str, str]:
 
 
 def generate_manifest(
-    data_files: List[Path],
+    data_files: list[Path],
     seed: int | None = None,
-    extra: Dict[str, Any] | None = None,
-) -> Dict[str, Any]:
+    extra: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """
     Build a reproducibility manifest as a dictionary.
 
@@ -98,7 +107,7 @@ def generate_manifest(
     dict
         The manifest dictionary.
     """
-    manifest: Dict[str, Any] = {
+    manifest: dict[str, Any] = {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "git_commit": _get_git_hash(),
         "python_version": sys.version,
@@ -121,7 +130,7 @@ def generate_manifest(
 
 
 def save_manifest(
-    manifest: Dict[str, Any],
+    manifest: dict[str, Any],
     output_path: Path,
 ) -> Path:
     """Write the manifest to a JSON file."""

@@ -18,7 +18,7 @@ def render_metric_row(metrics: list[dict]) -> None:
         ``delta_color`` (optional, "normal" | "inverse" | "off").
     """
     cols = st.columns(len(metrics))
-    for col, m in zip(cols, metrics):
+    for col, m in zip(cols, metrics, strict=False):
         with col:
             st.metric(
                 label=m["label"],

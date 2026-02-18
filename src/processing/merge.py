@@ -52,6 +52,8 @@ def merge_head_into_household(
     matched = merged[head_df.columns.drop("hhid")[0]].notna().sum()
     logger.info(
         "Merged head info: %d/%d households matched (%.1f%%).",
-        matched, n_after, matched / n_after * 100,
+        matched,
+        n_after,
+        matched / n_after * 100,
     )
     return merged

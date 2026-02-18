@@ -5,9 +5,8 @@ from __future__ import annotations
 import math
 
 import numpy as np
-import pytest
 
-from src.data.midpoint_tables import get_midpoint, _normalise_var_name
+from src.data.midpoint_tables import _normalise_var_name, get_midpoint
 
 
 class TestNormaliseVarName:

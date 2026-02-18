@@ -8,7 +8,6 @@ than OLS.
 from __future__ import annotations
 
 import logging
-from typing import List
 
 import pandas as pd
 import statsmodels.api as sm
@@ -37,7 +36,7 @@ def estimate_rlm(
     ModelResult
     """
     y = df[spec.dep_var]
-    x_cols: List[str] = [c for c in spec.indep_vars if c in df.columns]
+    x_cols: list[str] = [c for c in spec.indep_vars if c in df.columns]
     x = sm.add_constant(df[x_cols])
 
     norm = sm.robust.norms.HuberT()
@@ -51,7 +50,9 @@ def estimate_rlm(
 
     logger.info(
         "[%s] RLM (HuberT) fitted: N=%d, pseudo-R2=%.4f",
-        spec.name, int(results.nobs), pseudo_r2,
+        spec.name,
+        int(results.nobs),
+        pseudo_r2,
     )
 
     return ModelResult(

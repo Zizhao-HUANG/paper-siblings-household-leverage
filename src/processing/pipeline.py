@@ -16,7 +16,6 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional
 
 import pandas as pd
 
@@ -33,6 +32,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class PipelineResult:
     """Container for everything the pipeline produces."""
+
     analysis_df: pd.DataFrame
     validation_report: ValidationReport
     n_raw_households: int
@@ -50,8 +50,8 @@ class PipelineResult:
 
 def run_pipeline(
     cfg: Settings,
-    hh_path: Optional[Path] = None,
-    ind_path: Optional[Path] = None,
+    hh_path: Path | None = None,
+    ind_path: Path | None = None,
 ) -> PipelineResult:
     """
     Execute the full data processing pipeline.
@@ -95,9 +95,12 @@ def run_pipeline(
 
     # 8. Select analysis columns
     core_vars = [
-        "hhid", "head_siblings",
-        "debt_ratio_winsorized", "log_debt_ratio_winsorized",
-        "total_debt", "total_assets",
+        "hhid",
+        "head_siblings",
+        "debt_ratio_winsorized",
+        "log_debt_ratio_winsorized",
+        "total_debt",
+        "total_assets",
     ]
     all_cols = core_vars + cfg.head_control_vars + cfg.hh_control_vars
     existing = [c for c in all_cols if c in hh_df.columns]
@@ -106,7 +109,9 @@ def run_pipeline(
         logger.warning("Missing analysis columns (excluded): %s", missing)
 
     analysis_df = hh_df[existing].copy()
-    logger.info("Analysis DataFrame: %d rows x %d cols.", len(analysis_df), len(analysis_df.columns))
+    logger.info(
+        "Analysis DataFrame: %d rows x %d cols.", len(analysis_df), len(analysis_df.columns)
+    )
 
     # 9. Validate
     report = validate(analysis_df)

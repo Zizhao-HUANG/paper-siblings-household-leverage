@@ -17,7 +17,6 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import List, Optional
 
 import pandas as pd
 
@@ -47,7 +46,7 @@ def _fmt(value: float | None, decimals: int = 4) -> str:
 
 
 def build_regression_table(
-    results: List[ModelResult],
+    results: list[ModelResult],
     caption: str = "Regression Results",
     label: str = "tab:regression",
     note: str = "",
@@ -100,9 +99,10 @@ def build_regression_table(
     lines.append(header)
 
     # Dependent variable row
-    dv_row = " & ".join(
-        ["Dep. Variable"] + [r.spec.dep_var.replace("_", r"\_") for r in results]
-    ) + r" \\"
+    dv_row = (
+        " & ".join(["Dep. Variable"] + [r.spec.dep_var.replace("_", r"\_") for r in results])
+        + r" \\"
+    )
     lines.append(dv_row)
     lines.append(r"\hline")
 
@@ -133,31 +133,22 @@ def build_regression_table(
     lines.append(n_row)
 
     # R-squared
-    r2_row = " & ".join(
-        ["$R^2$"] + [_fmt(r.r_squared) for r in results]
-    ) + r" \\"
+    r2_row = " & ".join(["$R^2$"] + [_fmt(r.r_squared) for r in results]) + r" \\"
     lines.append(r2_row)
 
     # Adj R-squared
-    adj_r2_row = " & ".join(
-        ["Adj. $R^2$"] + [_fmt(r.adj_r_squared) for r in results]
-    ) + r" \\"
+    adj_r2_row = " & ".join(["Adj. $R^2$"] + [_fmt(r.adj_r_squared) for r in results]) + r" \\"
     lines.append(adj_r2_row)
 
     # Robust SE indicator
-    se_type_row = " & ".join(
-        ["Robust SE"] + [r.spec.robust_se.value for r in results]
-    ) + r" \\"
+    se_type_row = " & ".join(["Robust SE"] + [r.spec.robust_se.value for r in results]) + r" \\"
     lines.append(se_type_row)
 
     lines.append(r"\hline\hline")
 
     # Note
     if note:
-        lines.append(
-            f"\\multicolumn{{{n_models + 1}}}{{l}}"
-            f"{{\\footnotesize {note}}}"
-        )
+        lines.append(f"\\multicolumn{{{n_models + 1}}}{{l}}{{\\footnotesize {note}}}")
 
     lines.append(
         f"\\multicolumn{{{n_models + 1}}}{{l}}"
@@ -171,7 +162,7 @@ def build_regression_table(
 
 
 def save_latex_table(
-    results: List[ModelResult],
+    results: list[ModelResult],
     output_path: Path,
     caption: str = "Regression Results",
     label: str = "tab:regression",

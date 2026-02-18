@@ -14,7 +14,6 @@ Core transformations
 from __future__ import annotations
 
 import logging
-from typing import List
 
 import numpy as np
 import pandas as pd
@@ -32,7 +31,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 
-def _ensure_columns(df: pd.DataFrame, specs: List[VarSpec]) -> int:
+def _ensure_columns(df: pd.DataFrame, specs: list[VarSpec]) -> int:
     """Create missing columns as NaN; return count of columns created."""
     created = 0
     for spec in specs:
@@ -63,7 +62,7 @@ def _coalesce_var(
 # ---------------------------------------------------------------------------
 
 
-def coalesce_all(df: pd.DataFrame) -> tuple[List[str], List[str]]:
+def coalesce_all(df: pd.DataFrame) -> tuple[list[str], list[str]]:
     """
     Coalesce exact/interval pairs for every debt and asset variable.
 
@@ -81,13 +80,13 @@ def coalesce_all(df: pd.DataFrame) -> tuple[List[str], List[str]]:
         if col is not None and col not in df.columns:
             df[col] = np.nan
 
-    debt_cols: List[str] = []
+    debt_cols: list[str] = []
     for spec in ALL_DEBT_VARS:
         name = spec.coalesced_name
         df[name] = _coalesce_var(df, spec)
         debt_cols.append(name)
 
-    asset_cols: List[str] = []
+    asset_cols: list[str] = []
     for spec in ALL_ASSET_VARS:
         name = spec.coalesced_name
         df[name] = _coalesce_var(df, spec)
@@ -99,8 +98,8 @@ def coalesce_all(df: pd.DataFrame) -> tuple[List[str], List[str]]:
 
 def compute_totals(
     df: pd.DataFrame,
-    debt_cols: List[str],
-    asset_cols: List[str],
+    debt_cols: list[str],
+    asset_cols: list[str],
 ) -> None:
     """Compute ``total_debt``, ``total_assets`` (with vehicle adjustment)."""
     df["total_debt"] = df[debt_cols].fillna(0).sum(axis=1)
@@ -128,7 +127,8 @@ def compute_debt_ratio(df: pd.DataFrame, cfg: Settings) -> None:
         df["debt_ratio_winsorized"] = pd.Series(win_vals, index=clean.index)
         logger.info(
             "Winsorised debt_ratio at %s limits. N = %d.",
-            cfg.winsorize_limits, len(clean),
+            cfg.winsorize_limits,
+            len(clean),
         )
     else:
         df["debt_ratio_winsorized"] = np.nan

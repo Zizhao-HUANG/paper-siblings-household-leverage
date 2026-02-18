@@ -13,10 +13,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import pandas as pd
-
 
 # ---------------------------------------------------------------------------
 # Enums
@@ -25,6 +24,7 @@ import pandas as pd
 
 class Estimator(Enum):
     """Supported estimation methods."""
+
     OLS = auto()
     RIDGE = auto()
     RLM = auto()
@@ -32,11 +32,12 @@ class Estimator(Enum):
 
 class RobustSE(Enum):
     """Heteroscedasticity-consistent covariance estimators."""
+
     NONE = "nonrobust"
     HC0 = "HC0"
-    HC1 = "HC1"   # Stata default
+    HC1 = "HC1"  # Stata default
     HC2 = "HC2"
-    HC3 = "HC3"   # Most conservative
+    HC3 = "HC3"  # Most conservative
 
 
 # ---------------------------------------------------------------------------
@@ -70,14 +71,15 @@ class ModelSpec:
         Pass-through kwargs for the estimator (e.g. ``{"M": "HuberT"}``
         for RLM, or ``{"alphas": [...]}`` for RidgeCV).
     """
+
     name: str
     label: str
     estimator: Estimator
     dep_var: str
-    indep_vars: List[str]
+    indep_vars: list[str]
     robust_se: RobustSE = RobustSE.HC1
     scale_features: bool = False
-    extra: Dict[str, Any] = field(default_factory=dict)
+    extra: dict[str, Any] = field(default_factory=dict)
 
 
 # ---------------------------------------------------------------------------
@@ -88,20 +90,21 @@ class ModelSpec:
 @dataclass
 class ModelResult:
     """Container for one estimated model's outputs."""
+
     spec: ModelSpec
     n_obs: int
-    coefficients: pd.Series           # variable -> coef
-    std_errors: pd.Series             # variable -> SE
-    t_values: pd.Series               # variable -> t-stat
-    p_values: pd.Series               # variable -> p-value
+    coefficients: pd.Series  # variable -> coef
+    std_errors: pd.Series  # variable -> SE
+    t_values: pd.Series  # variable -> t-stat
+    p_values: pd.Series  # variable -> p-value
     r_squared: float
-    adj_r_squared: Optional[float]    # None for Ridge
-    aic: Optional[float]
-    bic: Optional[float]
-    raw_result: Any = None            # statsmodels RegressionResultsWrapper
+    adj_r_squared: float | None  # None for Ridge
+    aic: float | None
+    bic: float | None
+    raw_result: Any = None  # statsmodels RegressionResultsWrapper
 
     @property
-    def significant_vars(self) -> List[str]:
+    def significant_vars(self) -> list[str]:
         """Variables significant at the 5% level."""
         return self.p_values[self.p_values < 0.05].index.tolist()
 
@@ -110,7 +113,8 @@ class ModelResult:
 # Default model battery
 # ---------------------------------------------------------------------------
 
-def get_default_specs(indep_vars: List[str]) -> List[ModelSpec]:
+
+def get_default_specs(indep_vars: list[str]) -> list[ModelSpec]:
     """
     Return the five standard models used in the paper.
 

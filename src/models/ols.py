@@ -8,7 +8,6 @@ via the ``ModelSpec.robust_se`` field.
 from __future__ import annotations
 
 import logging
-from typing import List
 
 import pandas as pd
 import statsmodels.api as sm
@@ -37,21 +36,21 @@ def estimate_ols(
     ModelResult
     """
     y = df[spec.dep_var]
-    x_cols: List[str] = [c for c in spec.indep_vars if c in df.columns]
+    x_cols: list[str] = [c for c in spec.indep_vars if c in df.columns]
     x = sm.add_constant(df[x_cols])
 
     model = sm.OLS(y, x)
 
     # Fit with robust standard errors if requested
     cov_type = spec.robust_se.value
-    if spec.robust_se == RobustSE.NONE:
-        results = model.fit()
-    else:
-        results = model.fit(cov_type=cov_type)
+    results = model.fit() if spec.robust_se == RobustSE.NONE else model.fit(cov_type=cov_type)
 
     logger.info(
         "[%s] OLS fitted: N=%d, R2=%.4f, cov_type=%s",
-        spec.name, results.nobs, results.rsquared, cov_type,
+        spec.name,
+        results.nobs,
+        results.rsquared,
+        cov_type,
     )
 
     return ModelResult(
