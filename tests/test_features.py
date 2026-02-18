@@ -4,9 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-import pytest
 
-from src.config import Settings
 from src.processing.controls import build_controls
 
 
@@ -18,19 +16,23 @@ class TestBuildControls:
         assert pd.isna(df["head_is_male"].iloc[2])
 
     def test_marital_status(self):
-        df = pd.DataFrame({
-            "head_marital": [2, 3, 7, 1, 5, np.nan],
-            "total_assets": [1] * 6,
-        })
+        df = pd.DataFrame(
+            {
+                "head_marital": [2, 3, 7, 1, 5, np.nan],
+                "total_assets": [1] * 6,
+            }
+        )
         build_controls(df)
         assert df["head_is_married"].tolist()[:5] == [1.0, 1.0, 1.0, 0.0, 0.0]
         assert pd.isna(df["head_is_married"].iloc[5])
 
     def test_business_ownership(self):
-        df = pd.DataFrame({
-            "b2000b": [1, 0, np.nan],
-            "total_assets": [1, 2, 3],
-        })
+        df = pd.DataFrame(
+            {
+                "b2000b": [1, 0, np.nan],
+                "total_assets": [1, 2, 3],
+            }
+        )
         build_controls(df)
         assert df["has_business"].tolist()[:2] == [1.0, 0.0]
 

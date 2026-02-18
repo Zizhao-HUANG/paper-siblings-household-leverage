@@ -3,13 +3,11 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
-import numpy as np
 import pandas as pd
 import pytest
 
-from src.export.latex import build_regression_table, _star
+from src.export.latex import _star, build_regression_table
 from src.export.manifest import generate_manifest, save_manifest
 from src.export.tables import export_descriptive_stats
 from src.models.spec import Estimator, ModelResult, ModelSpec, RobustSE
@@ -19,7 +17,9 @@ from src.models.spec import Estimator, ModelResult, ModelSpec, RobustSE
 def mock_model_result():
     """A minimal ModelResult for testing."""
     spec = ModelSpec(
-        name="M1", label="Test OLS", estimator=Estimator.OLS,
+        name="M1",
+        label="Test OLS",
+        estimator=Estimator.OLS,
         dep_var="debt_ratio_winsorized",
         indep_vars=["head_siblings", "head_age"],
         robust_se=RobustSE.HC1,

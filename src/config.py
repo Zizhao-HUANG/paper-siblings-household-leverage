@@ -16,8 +16,6 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List
-
 
 # ---------------------------------------------------------------------------
 # Project root is resolved relative to *this* file (src/config.py → root)
@@ -54,7 +52,7 @@ class Settings:
     log_dv_constant: float = 0.001
 
     # ---- variable groups ----
-    head_control_vars: List[str] = field(
+    head_control_vars: list[str] = field(
         default_factory=lambda: [
             "head_age",
             "head_is_male",
@@ -63,7 +61,7 @@ class Settings:
             "head_health",
         ]
     )
-    hh_control_vars: List[str] = field(
+    hh_control_vars: list[str] = field(
         default_factory=lambda: ["has_business", "num_houses", "log_total_assets"]
     )
 
@@ -77,11 +75,11 @@ class Settings:
         return self.data_dir / self.ind_filename
 
     @property
-    def all_control_vars(self) -> List[str]:
+    def all_control_vars(self) -> list[str]:
         return self.head_control_vars + self.hh_control_vars
 
     @property
-    def independent_vars(self) -> List[str]:
+    def independent_vars(self) -> list[str]:
         return ["head_siblings"] + self.all_control_vars
 
     def ensure_dirs(self) -> None:

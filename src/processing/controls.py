@@ -32,9 +32,7 @@ def build_controls(df: pd.DataFrame) -> None:
 
     # ---- Marital status ----
     if "head_marital" in df.columns:
-        df["head_is_married"] = np.where(
-            df["head_marital"].isin([2, 3, 7]), 1.0, 0.0
-        )
+        df["head_is_married"] = np.where(df["head_marital"].isin([2, 3, 7]), 1.0, 0.0)
         df.loc[df["head_marital"].isna(), "head_is_married"] = np.nan
     else:
         df["head_is_married"] = np.nan

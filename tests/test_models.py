@@ -6,14 +6,13 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from src.models.runner import _prepare_data, run_model
 from src.models.spec import (
     Estimator,
-    ModelResult,
     ModelSpec,
     RobustSE,
     get_default_specs,
 )
-from src.models.runner import run_model, _prepare_data
 
 
 class TestModelSpec:
@@ -28,8 +27,11 @@ class TestModelSpec:
 
     def test_robust_se_default(self):
         spec = ModelSpec(
-            name="test", label="test", estimator=Estimator.OLS,
-            dep_var="y", indep_vars=["x"],
+            name="test",
+            label="test",
+            estimator=Estimator.OLS,
+            dep_var="y",
+            indep_vars=["x"],
         )
         assert spec.robust_se == RobustSE.HC1
 
@@ -41,26 +43,36 @@ class TestModelSpec:
 
 class TestPrepareData:
     def test_listwise_deletion(self):
-        df = pd.DataFrame({
-            "y": [1.0, 2.0, np.nan, 4.0],
-            "x1": [1, 2, 3, 4],
-            "x2": [10, np.nan, 30, 40],
-        })
+        df = pd.DataFrame(
+            {
+                "y": [1.0, 2.0, np.nan, 4.0],
+                "x1": [1, 2, 3, 4],
+                "x2": [10, np.nan, 30, 40],
+            }
+        )
         spec = ModelSpec(
-            name="T", label="T", estimator=Estimator.OLS,
-            dep_var="y", indep_vars=["x1", "x2"],
+            name="T",
+            label="T",
+            estimator=Estimator.OLS,
+            dep_var="y",
+            indep_vars=["x1", "x2"],
         )
         clean = _prepare_data(df, spec)
         assert len(clean) == 2  # rows 0 and 3
 
     def test_infinite_values_removed(self):
-        df = pd.DataFrame({
-            "y": [1.0, np.inf, 3.0],
-            "x": [1, 2, 3],
-        })
+        df = pd.DataFrame(
+            {
+                "y": [1.0, np.inf, 3.0],
+                "x": [1, 2, 3],
+            }
+        )
         spec = ModelSpec(
-            name="T", label="T", estimator=Estimator.OLS,
-            dep_var="y", indep_vars=["x"],
+            name="T",
+            label="T",
+            estimator=Estimator.OLS,
+            dep_var="y",
+            indep_vars=["x"],
         )
         clean = _prepare_data(df, spec)
         assert len(clean) == 2
@@ -69,7 +81,9 @@ class TestPrepareData:
 class TestRunModel:
     def test_ols_basic(self, sample_analysis_df):
         spec = ModelSpec(
-            name="T1", label="Test OLS", estimator=Estimator.OLS,
+            name="T1",
+            label="Test OLS",
+            estimator=Estimator.OLS,
             dep_var="debt_ratio_winsorized",
             indep_vars=["head_age", "head_is_male"],
             robust_se=RobustSE.HC1,
@@ -81,7 +95,9 @@ class TestRunModel:
 
     def test_ridge_basic(self, sample_analysis_df):
         spec = ModelSpec(
-            name="T2", label="Test Ridge", estimator=Estimator.RIDGE,
+            name="T2",
+            label="Test Ridge",
+            estimator=Estimator.RIDGE,
             dep_var="debt_ratio_winsorized",
             indep_vars=["head_age", "head_is_male"],
             scale_features=True,
@@ -92,7 +108,9 @@ class TestRunModel:
 
     def test_rlm_basic(self, sample_analysis_df):
         spec = ModelSpec(
-            name="T3", label="Test RLM", estimator=Estimator.RLM,
+            name="T3",
+            label="Test RLM",
+            estimator=Estimator.RLM,
             dep_var="debt_ratio_winsorized",
             indep_vars=["head_age", "head_is_male"],
         )
@@ -102,8 +120,11 @@ class TestRunModel:
     def test_insufficient_data(self):
         df = pd.DataFrame({"y": [1.0], "x": [2.0]})
         spec = ModelSpec(
-            name="T", label="T", estimator=Estimator.OLS,
-            dep_var="y", indep_vars=["x"],
+            name="T",
+            label="T",
+            estimator=Estimator.OLS,
+            dep_var="y",
+            indep_vars=["x"],
         )
         result = run_model(df, spec)
         assert result is None

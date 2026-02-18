@@ -13,16 +13,15 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import List
 
-import streamlit as st
 import pandas as pd
+import streamlit as st
 
 from src.config import Settings
 from src.data.validator import ValidationReport
 from src.models.runner import run_all
 from src.models.spec import ModelResult, get_default_specs
-from src.processing.pipeline import PipelineResult, run_pipeline
+from src.processing.pipeline import run_pipeline
 from src.utils.logging_config import setup_logging
 from src.webapp.components.sidebar import render_sidebar
 from src.webapp.pages import data_explorer, diagnostics, overview, regression
@@ -50,6 +49,7 @@ inject_theme()
 # ---------------------------------------------------------------------------
 # Session state helpers
 # ---------------------------------------------------------------------------
+
 
 def _project_root() -> Path:
     """Resolve the project root directory (where pyproject.toml lives)."""
@@ -81,7 +81,7 @@ def _load_data() -> tuple[pd.DataFrame, ValidationReport | None]:
     return pd.DataFrame(), None
 
 
-def _get_model_results(df: pd.DataFrame) -> List[ModelResult]:
+def _get_model_results(df: pd.DataFrame) -> list[ModelResult]:
     """Run or retrieve model results."""
     if "model_results" in st.session_state:
         return st.session_state["model_results"]
@@ -123,9 +123,7 @@ if df.empty:
 
     with col1:
         st.markdown("#### Option 1: Run the Full Pipeline")
-        st.markdown(
-            "Place your `.dta` files in `data/raw/` and click **Run Pipeline**."
-        )
+        st.markdown("Place your `.dta` files in `data/raw/` and click **Run Pipeline**.")
         if st.button("Run Pipeline", type="primary"):
             with st.spinner("Running pipeline..."):
                 try:

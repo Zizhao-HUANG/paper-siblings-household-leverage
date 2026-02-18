@@ -31,19 +31,27 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="CHFS 2017 Siblings-Debt Econometric Analysis Pipeline",
     )
     parser.add_argument(
-        "--data-dir", type=Path, default=None,
+        "--data-dir",
+        type=Path,
+        default=None,
         help="Directory containing .dta files (default: data/raw/)",
     )
     parser.add_argument(
-        "--output-dir", type=Path, default=None,
+        "--output-dir",
+        type=Path,
+        default=None,
         help="Directory for output artifacts (default: outputs/)",
     )
     parser.add_argument(
-        "--seed", type=int, default=42,
+        "--seed",
+        type=int,
+        default=42,
         help="Random seed for reproducibility (default: 42)",
     )
     parser.add_argument(
-        "-v", "--verbose", action="store_true",
+        "-v",
+        "--verbose",
+        action="store_true",
         help="Enable debug logging",
     )
     return parser.parse_args(argv)
@@ -98,14 +106,10 @@ def main(argv: list[str] | None = None) -> int:
         save_latex_table(
             model_results,
             output_path=tables_dir / "regression_results.tex",
-            caption=(
-                "Effect of Number of Siblings on Household Debt Ratio "
-                "(CHFS 2017)"
-            ),
+            caption=("Effect of Number of Siblings on Household Debt Ratio (CHFS 2017)"),
             label="tab:regression",
             note=(
-                "Standard errors in parentheses. "
-                "HC1 robust standard errors used for OLS models."
+                "Standard errors in parentheses. HC1 robust standard errors used for OLS models."
             ),
         )
 

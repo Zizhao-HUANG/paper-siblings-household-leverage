@@ -9,7 +9,6 @@ the correct estimator, and returns a list of ``ModelResult`` objects.
 from __future__ import annotations
 
 import logging
-from typing import List
 
 import numpy as np
 import pandas as pd
@@ -54,7 +53,9 @@ def run_model(df: pd.DataFrame, spec: ModelSpec) -> ModelResult | None:
     if len(clean) < min_obs:
         logger.error(
             "[%s] Insufficient observations: %d (need >= %d). Skipped.",
-            spec.name, len(clean), min_obs,
+            spec.name,
+            len(clean),
+            min_obs,
         )
         return None
 
@@ -73,8 +74,8 @@ def run_model(df: pd.DataFrame, spec: ModelSpec) -> ModelResult | None:
 
 def run_all(
     df: pd.DataFrame,
-    specs: List[ModelSpec],
-) -> List[ModelResult]:
+    specs: list[ModelSpec],
+) -> list[ModelResult]:
     """
     Run all models in the spec list and return successful results.
 
@@ -90,7 +91,7 @@ def run_all(
     list[ModelResult]
         One entry per successfully estimated model.
     """
-    results: List[ModelResult] = []
+    results: list[ModelResult] = []
     for spec in specs:
         logger.info("--- Running model: %s (%s) ---", spec.name, spec.label)
         result = run_model(df, spec)

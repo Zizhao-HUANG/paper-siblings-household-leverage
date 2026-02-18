@@ -5,9 +5,7 @@ Regression diagnostics: VIF, missing-value audit, descriptive statistics.
 from __future__ import annotations
 
 import logging
-from typing import List
 
-import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 from statsmodels.stats.outliers_influence import variance_inflation_factor
@@ -17,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 def calculate_vif(
     df: pd.DataFrame,
-    cols: List[str],
+    cols: list[str],
     threshold: float = 5.0,
 ) -> pd.DataFrame:
     """
@@ -38,10 +36,12 @@ def calculate_vif(
         Columns: ``feature``, ``VIF``, ``flagged``.
     """
     x = sm.add_constant(df[cols], has_constant="add")
-    vif_data = pd.DataFrame({
-        "feature": x.columns,
-        "VIF": [variance_inflation_factor(x.values, i) for i in range(x.shape[1])],
-    })
+    vif_data = pd.DataFrame(
+        {
+            "feature": x.columns,
+            "VIF": [variance_inflation_factor(x.values, i) for i in range(x.shape[1])],
+        }
+    )
     vif_data = vif_data[vif_data["feature"] != "const"].sort_values("VIF", ascending=False)
     vif_data["flagged"] = vif_data["VIF"] > threshold
 
@@ -57,7 +57,7 @@ def calculate_vif(
 
 def missing_value_audit(
     df: pd.DataFrame,
-    cols: List[str],
+    cols: list[str],
 ) -> pd.DataFrame:
     """
     Produce a missing-value summary for the specified columns.
@@ -71,20 +71,24 @@ def missing_value_audit(
     existing = [c for c in cols if c in df.columns]
     counts = df[existing].isna().sum()
     pcts = (counts / len(df) * 100).round(2)
-    result = pd.DataFrame({
-        "column": counts.index,
-        "missing_count": counts.values,
-        "missing_pct": pcts.values,
-    })
-    result = result[result["missing_count"] > 0].sort_values(
-        "missing_count", ascending=False
-    ).reset_index(drop=True)
+    result = pd.DataFrame(
+        {
+            "column": counts.index,
+            "missing_count": counts.values,
+            "missing_pct": pcts.values,
+        }
+    )
+    result = (
+        result[result["missing_count"] > 0]
+        .sort_values("missing_count", ascending=False)
+        .reset_index(drop=True)
+    )
     return result
 
 
 def descriptive_stats(
     df: pd.DataFrame,
-    cols: List[str],
+    cols: list[str],
 ) -> pd.DataFrame:
     """
     Compute descriptive statistics for the given columns.

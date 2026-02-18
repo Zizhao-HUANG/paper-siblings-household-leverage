@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import List
 
 import pandas as pd
 
@@ -20,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 def export_descriptive_stats(
     df: pd.DataFrame,
-    cols: List[str],
+    cols: list[str],
     output_dir: Path,
     filename_stem: str = "descriptive_stats",
 ) -> tuple[Path, Path]:
@@ -51,7 +50,7 @@ def export_descriptive_stats(
 
 def export_missing_audit(
     df: pd.DataFrame,
-    cols: List[str],
+    cols: list[str],
     output_dir: Path,
     filename_stem: str = "missing_values",
 ) -> Path:
@@ -66,7 +65,7 @@ def export_missing_audit(
 
 def export_vif(
     df: pd.DataFrame,
-    cols: List[str],
+    cols: list[str],
     output_dir: Path,
     threshold: float = 5.0,
     filename_stem: str = "vif_diagnostics",

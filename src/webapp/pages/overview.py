@@ -4,10 +4,10 @@ Overview page — landing dashboard with key metrics and summary charts.
 
 from __future__ import annotations
 
-import streamlit as st
 import pandas as pd
+import streamlit as st
 
-from src.webapp.components.charts import histogram, heatmap
+from src.webapp.components.charts import heatmap, histogram
 from src.webapp.components.metric_cards import render_metric_row
 
 
@@ -23,25 +23,28 @@ def render(df: pd.DataFrame, settings: dict) -> None:
 
     # ---- Key metrics ----
     n_total = len(df)
-    n_with_siblings = int(df["head_siblings"].notna().sum()) if "head_siblings" in df.columns else 0
+    n_with_siblings = (
+        int(df["head_siblings"].notna().sum()) if "head_siblings" in df.columns else 0
+    )
     mean_debt_ratio = (
-        df["debt_ratio_winsorized"].mean()
-        if "debt_ratio_winsorized" in df.columns else 0
+        df["debt_ratio_winsorized"].mean() if "debt_ratio_winsorized" in df.columns else 0
     )
     mean_assets = df["total_assets"].mean() if "total_assets" in df.columns else 0
 
-    render_metric_row([
-        {"label": "Total Households", "value": f"{n_total:,}"},
-        {"label": "With Sibling Data", "value": f"{n_with_siblings:,}"},
-        {
-            "label": "Mean Debt Ratio",
-            "value": f"{mean_debt_ratio:.4f}",
-        },
-        {
-            "label": "Mean Total Assets",
-            "value": f"¥{mean_assets:,.0f}",
-        },
-    ])
+    render_metric_row(
+        [
+            {"label": "Total Households", "value": f"{n_total:,}"},
+            {"label": "With Sibling Data", "value": f"{n_with_siblings:,}"},
+            {
+                "label": "Mean Debt Ratio",
+                "value": f"{mean_debt_ratio:.4f}",
+            },
+            {
+                "label": "Mean Total Assets",
+                "value": f"¥{mean_assets:,.0f}",
+            },
+        ]
+    )
 
     st.markdown("---")
 
@@ -72,8 +75,13 @@ def render(df: pd.DataFrame, settings: dict) -> None:
     # ---- Correlation heatmap ----
     st.markdown("### Correlation Matrix")
     numeric_cols = [
-        "head_siblings", "debt_ratio_winsorized", "head_age",
-        "head_educ", "head_health", "num_houses", "log_total_assets",
+        "head_siblings",
+        "debt_ratio_winsorized",
+        "head_age",
+        "head_educ",
+        "head_health",
+        "num_houses",
+        "log_total_assets",
     ]
     available = [c for c in numeric_cols if c in df.columns]
     if len(available) >= 2:
