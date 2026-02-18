@@ -6,6 +6,7 @@ All charts use a consistent dark theme matching the Streamlit CSS.
 
 from __future__ import annotations
 
+import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -90,7 +91,7 @@ def coefficient_plot(
             marker=dict(size=10, color="#60a5fa"),
             error_x=dict(
                 type="data",
-                array=errors.values * 1.96,
+                array=np.asarray(errors.values) * 1.96,
                 visible=True,
                 color="#94a3b8",
                 thickness=1.5,
