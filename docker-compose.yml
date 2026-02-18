@@ -1,0 +1,32 @@
+# docker compose up analysis   → run full pipeline
+# docker compose up webapp     → launch interactive dashboard
+# docker compose up            → both
+
+services:
+  analysis:
+    build:
+      context: .
+      target: base
+    volumes:
+      - ./data:/app/data:ro
+      - ./outputs:/app/outputs
+    environment:
+      - CHFS_DATA_DIR=/app/data/raw
+      - CHFS_OUTPUT_DIR=/app/outputs
+    command: python -m src.cli
+
+  webapp:
+    build:
+      context: .
+      target: webapp
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data:ro
+      - ./outputs:/app/outputs
+    environment:
+      - CHFS_DATA_DIR=/app/data/raw
+      - CHFS_OUTPUT_DIR=/app/outputs
+    depends_on:
+      analysis:
+        condition: service_completed_successfully
