@@ -150,7 +150,7 @@ def _check_column(
             )
 
     # --- Infinity check ---
-    if np.issubdtype(non_null.dtype, np.floating):
+    if np.issubdtype(non_null.dtype.type, np.floating):  # type: ignore[arg-type]
         inf_count = int(np.isinf(non_null).sum())
         if inf_count > 0:
             violations.append(

@@ -38,7 +38,7 @@ def _prepare_data(df: pd.DataFrame, spec: ModelSpec) -> pd.DataFrame:
     if spec.dep_var in clean.columns:
         clean = clean[np.isfinite(clean[spec.dep_var])]
 
-    return clean
+    return pd.DataFrame(clean)
 
 
 def run_model(df: pd.DataFrame, spec: ModelSpec) -> ModelResult | None:

@@ -52,7 +52,7 @@ def calculate_vif(
     else:
         logger.info("No VIF exceeds %.1f.", threshold)
 
-    return vif_data.reset_index(drop=True)
+    return pd.DataFrame(vif_data.reset_index(drop=True))
 
 
 def missing_value_audit(
@@ -83,7 +83,7 @@ def missing_value_audit(
         .sort_values("missing_count", ascending=False)
         .reset_index(drop=True)
     )
-    return result
+    return pd.DataFrame(result)
 
 
 def descriptive_stats(
@@ -99,4 +99,4 @@ def descriptive_stats(
     desc = df[existing].describe(percentiles=[0.25, 0.5, 0.75]).T
     desc = desc.rename(columns={"count": "N"})
     desc["N"] = desc["N"].astype(int)
-    return desc
+    return pd.DataFrame(desc)

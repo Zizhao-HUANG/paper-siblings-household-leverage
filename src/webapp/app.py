@@ -84,7 +84,7 @@ def _load_data() -> tuple[pd.DataFrame, ValidationReport | None]:
 def _get_model_results(df: pd.DataFrame) -> list[ModelResult]:
     """Run or retrieve model results."""
     if "model_results" in st.session_state:
-        return st.session_state["model_results"]
+        return list(st.session_state["model_results"])
 
     if df.empty:
         return []

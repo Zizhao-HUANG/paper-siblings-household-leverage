@@ -107,4 +107,4 @@ def extract_heads(
     result = heads[cols_present].rename(columns=rename_map)
     result = result.drop_duplicates(subset=["hhid"], keep="first")
     logger.info("Prepared %d head records for merge.", len(result))
-    return result
+    return pd.DataFrame(result)
