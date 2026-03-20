@@ -1,5 +1,7 @@
 # Number of Siblings and Household Debt Ratio in China: An Empirical Analysis Based on CHFS 2017 Data
 
+[![Research Summary](https://img.shields.io/badge/📄_Research_Summary-PDF-2563EB?style=for-the-badge&logoColor=white)](docs/Research_Summary_HUANG_Zizhao.pdf)  [![Résumé des Travaux](https://img.shields.io/badge/📄_Résumé_des_Travaux-PDF-7C3AED?style=for-the-badge&logoColor=white)](docs/Resume_Travaux_HUANG_Zizhao.pdf)
+
 ## Motivation
 
 Household leverage in China has risen sharply over the past decade, yet microeconomic determinants, particularly those rooted in family structure, remain underexplored. While existing literature examines the effect of household size and intergenerational transfers on financial decisions, the specific role of the *sibling network* as a channel for risk sharing, social comparison, and resource competition has received limited attention.
@@ -26,6 +28,7 @@ Across all specifications, the sibling count is positively and significantly ass
 ## Repository Structure
 
 ```
+docs/              # Author documents
 src/
 ├── data/          # Schema validation, variable construction
 ├── processing/    # Sample merging, feature engineering
